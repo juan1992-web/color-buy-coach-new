@@ -12,9 +12,12 @@ export default function Upload() {
 
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      // Create a fake local object URL for MVP
-      const url = URL.createObjectURL(e.target.files[0]);
-      setPhoto(url);
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPhoto(reader.result as string);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -23,8 +26,14 @@ export default function Upload() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (isFormValid) {
-      // In a real app, save state to context/store, then navigate
-      navigate('/analyzing');
+      navigate('/analyzing', { 
+        state: { 
+          imageBase64: photo, 
+          accessory, 
+          makeup, 
+          budget 
+        } 
+      });
     }
   };
 

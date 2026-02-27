@@ -1,8 +1,8 @@
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '../components/Button';
 import { ArrowLeft, Share2, Info, ExternalLink, RefreshCw } from 'lucide-react';
 
-// Fake Data for MVP
+// Fake Data for MVP fallback
 const MOCK_RESULT = {
   tone: 'Cálido',
   confidence: 'Media',
@@ -39,7 +39,7 @@ function ProductCard({ product }: { product: any }) {
         <p className="text-sm text-gray-500 mb-2 leading-tight">{product.reason}</p>
         
         <div className="flex items-center justify-between mt-2">
-          <span className={`text-xs px-2 py-1 rounded-md font-bold ${ 
+          <span className={`text-xs px-2 py-1 rounded-md font-bold ${
             product.type === 'Seguro' ? 'bg-blue-50 text-brand-blue' : 
             product.type === 'Favorito' ? 'bg-orange-50 text-brand-coral' : 
             'bg-rose-50 text-brand-magenta'
@@ -57,9 +57,14 @@ function ProductCard({ product }: { product: any }) {
 
 export default function Result() {
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const handleShare = () => {
-    const text = `Me salió una recomendación de color 😄 ¿Cuál te gusta más? 1, 2 o 3\nPrueba gratis en: colorcompra.com`;
+  // Load from API state or fallback to Mocks
+  const resultData = location.state?.resultData;
+  const diagnosis = resultData?.diagnosis || MOCK_RESULT;
+  const recommendations = resultData?.recommendations || MOCK_RECOMMENDATIONS;
+
+  const handleShare = () => {    const text = `Me salió una recomendación de color 😄 ¿Cuál te gusta más? 1, 2 o 3\nPrueba gratis en: colorcompra.com`;
     const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
     window.open(url, '_blank');
   };
@@ -88,17 +93,18 @@ export default function Result() {
         <section className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 mb-6 relative overflow-hidden">
           <div className="absolute -right-6 -top-6 w-24 h-24 bg-brand-coral opacity-10 rounded-full blur-2xl"></div>
           <h2 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-1">Tu tono sugerido</h2>
-          <div className="flex items-end gap-3 mb-3">
-            <span className="text-3xl font-extrabold text-brand-dark">{MOCK_RESULT.tone}</span>
+          <div className="flex items-end gap-3 mb-3 relative z-10">
+            <span className="text-3xl font-extrabold text-brand-dark">{diagnosis.tone}</span>
             <span className="text-xs font-semibold bg-gray-100 text-gray-600 px-2 py-1 rounded-md mb-1 flex items-center">
-              Confianza: {MOCK_RESULT.confidence} <Info className="w-3 h-3 ml-1" />
+              Confianza: {diagnosis.confidence || 'Media'} <Info className="w-3 h-3 ml-1" />
             </span>
           </div>
-          <p className="text-sm text-gray-600">
-            Subtono: <span className="font-semibold">{MOCK_RESULT.subtone}</span> • Contraste: <span className="font-semibold">{MOCK_RESULT.contrast}</span>
+          
+          <p className="text-sm text-gray-600 relative z-10">
+            Subtono: <span className="font-semibold">{diagnosis.subtone}</span> • Contraste: <span className="font-semibold">{diagnosis.contrast}</span>
           </p>
           
-          <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500">
+          <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500 relative z-10">
             <span>¿Resultado raro?</span>
             <button onClick={() => navigate('/upload')} className="text-brand-magenta font-bold flex items-center">
               <RefreshCw className="w-3 h-3 mr-1" />
@@ -120,7 +126,7 @@ export default function Result() {
                 Labiales (Top 3)
               </h4>
               <div className="space-y-3">
-                {MOCK_RECOMMENDATIONS.lips.map(lip => (
+                {recommendations.lips?.map((lip: any) => (
                   <ProductCard key={lip.id} product={lip} />
                 ))}
               </div>
@@ -133,7 +139,7 @@ export default function Result() {
                 Rubores (Top 2)
               </h4>
               <div className="space-y-3">
-                {MOCK_RECOMMENDATIONS.blush.map(blush => (
+                {recommendations.blush?.map((blush: any) => (
                   <ProductCard key={blush.id} product={blush} />
                 ))}
               </div>

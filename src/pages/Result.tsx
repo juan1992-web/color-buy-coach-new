@@ -22,29 +22,30 @@ const MOCK_RECOMMENDATIONS = {
   ],
 };
 
+// Product card component
 function ProductCard({ product }: { product: any }) {
   return (
     <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow flex items-start gap-4 mb-3">
       {/* Color Preview Swatch */}
       <div 
         className="w-12 h-12 rounded-full shrink-0 shadow-inner border border-gray-200"
-        style={{ backgroundColor: product.color }}
+        style={{ backgroundColor: product.color_hex || '#cccccc' }}
       />
       
       <div className="flex-1 min-w-0">
         <div className="flex justify-between items-start mb-1">
-          <h4 className="font-bold text-gray-900 truncate pr-2">{product.name}</h4>
-          <span className="font-bold text-brand-dark">{product.price}</span>
+          <h4 className="font-bold text-gray-900 truncate pr-2">{product.nombre}</h4>
+          <span className="font-bold text-brand-dark">${product.precio_usd}</span>
         </div>
-        <p className="text-sm text-gray-500 mb-2 leading-tight">{product.reason}</p>
+        <p className="text-sm text-gray-500 mb-2 leading-tight">{product.razon}</p>
         
         <div className="flex items-center justify-between mt-2">
           <span className={`text-xs px-2 py-1 rounded-md font-bold ${
-            product.type === 'Seguro' ? 'bg-blue-50 text-brand-blue' : 
-            product.type === 'Favorito' ? 'bg-orange-50 text-brand-coral' : 
+            product.etiqueta === 'Seguro' ? 'bg-blue-50 text-brand-blue' : 
+            product.etiqueta === 'Favorito' ? 'bg-orange-50 text-brand-coral' : 
             'bg-rose-50 text-brand-magenta'
           }`}>
-            {product.tag}
+            {product.etiqueta}
           </span>
           <button className="text-xs font-bold text-gray-400 hover:text-brand-magenta flex items-center">
             Ver más <ExternalLink className="w-3 h-3 ml-1" />
@@ -61,10 +62,23 @@ export default function Result() {
 
   // Load from API state or fallback to Mocks
   const resultData = location.state?.resultData;
-  const diagnosis = resultData?.diagnosis || MOCK_RESULT;
-  const recommendations = resultData?.recommendations || MOCK_RECOMMENDATIONS;
+  
+  // Default structure if data is missing
+  const diagnosis = {
+    tono_sugerido: resultData?.tono_sugerido || 'Neutro',
+    confianza: resultData?.confianza || 'Baja',
+    subtono: resultData?.subtono || 'Desconocido',
+    contraste: resultData?.contraste || 'Medio'
+  };
 
-  const handleShare = () => {    const text = `Me salió una recomendación de color 😄 ¿Cuál te gusta más? 1, 2 o 3\nPrueba gratis en: colorcompra.com`;
+  const recomendacion = resultData?.recomendacion_de_hoy || {
+    prioridad_compra: 'Analizando las mejores opciones para ti...',
+    labiales: [],
+    rubores: []
+  };
+
+  const handleShare = () => {
+    const text = `¡Mi coach de color me recomendó estos productos! 😄\nPrueba gratis en: colorcompra.com`;
     const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
     window.open(url, '_blank');
   };
@@ -89,19 +103,19 @@ export default function Result() {
       </header>
 
       <main className="flex-1 p-6">
-        {/* Diagnosis Summary (Short!) */}
+        {/* Diagnosis Summary */}
         <section className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 mb-6 relative overflow-hidden">
           <div className="absolute -right-6 -top-6 w-24 h-24 bg-brand-coral opacity-10 rounded-full blur-2xl"></div>
           <h2 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-1">Tu tono sugerido</h2>
           <div className="flex items-end gap-3 mb-3 relative z-10">
-            <span className="text-3xl font-extrabold text-brand-dark">{diagnosis.tone}</span>
+            <span className="text-3xl font-extrabold text-brand-dark">{diagnosis.tono_sugerido}</span>
             <span className="text-xs font-semibold bg-gray-100 text-gray-600 px-2 py-1 rounded-md mb-1 flex items-center">
-              Confianza: {diagnosis.confidence || 'Media'} <Info className="w-3 h-3 ml-1" />
+              Confianza: {diagnosis.confianza} <Info className="w-3 h-3 ml-1" />
             </span>
           </div>
           
           <p className="text-sm text-gray-600 relative z-10">
-            Subtono: <span className="font-semibold">{diagnosis.subtone}</span> • Contraste: <span className="font-semibold">{diagnosis.contrast}</span>
+            Subtono: <span className="font-semibold">{diagnosis.subtono}</span> • Contraste: <span className="font-semibold">{diagnosis.contraste}</span>
           </p>
           
           <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500 relative z-10">
@@ -113,10 +127,12 @@ export default function Result() {
           </div>
         </section>
 
-        {/* Recommendations Section (Long!) */}
+        {/* Recommendations Section */}
         <div className="mb-8">
           <h3 className="font-extrabold text-xl text-brand-dark mb-1">Recomendación de hoy</h3>
-          <p className="text-sm text-gray-500 mb-4">Prioridad de compra según tu perfil</p>
+          <p className="text-sm text-brand-magenta font-bold mb-4 bg-rose-50 p-3 rounded-xl border border-rose-100">
+            "{recomendacion.prioridad_compra}"
+          </p>
           
           <div className="space-y-6">
             {/* Lips */}
@@ -126,8 +142,8 @@ export default function Result() {
                 Labiales (Top 3)
               </h4>
               <div className="space-y-3">
-                {recommendations.lips?.map((lip: any) => (
-                  <ProductCard key={lip.id} product={lip} />
+                {recomendacion.labiales?.map((lip: any, idx: number) => (
+                  <ProductCard key={idx} product={lip} />
                 ))}
               </div>
             </section>
@@ -139,8 +155,8 @@ export default function Result() {
                 Rubores (Top 2)
               </h4>
               <div className="space-y-3">
-                {recommendations.blush?.map((blush: any) => (
-                  <ProductCard key={blush.id} product={blush} />
+                {recomendacion.rubores?.map((blush: any, idx: number) => (
+                  <ProductCard key={idx} product={blush} />
                 ))}
               </div>
             </section>

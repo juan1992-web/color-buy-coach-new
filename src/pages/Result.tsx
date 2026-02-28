@@ -2,26 +2,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '../components/Button';
 import { ArrowLeft, Share2, Info, ExternalLink, RefreshCw } from 'lucide-react';
 
-// Fake Data for MVP fallback
-const MOCK_RESULT = {
-  tone: 'Cálido',
-  confidence: 'Media',
-  subtone: 'Cálido/Neutral',
-  contrast: 'Medio',
-};
-
-const MOCK_RECOMMENDATIONS = {
-  lips: [
-    { id: 1, name: 'Nude cálido suave', reason: 'Seguro para uso diario', price: '$8', tag: 'Seguro', type: 'Seguro', color: '#D4A373' },
-    { id: 2, name: 'Rosa coral medio', reason: 'Da vida al rostro', price: '$12', tag: 'Favorito', type: 'Favorito', color: '#F28482' },
-    { id: 3, name: 'Terracota suave', reason: 'Ideal para la noche', price: '$15', tag: 'Punto', type: 'Punto', color: '#E56B6F' },
-  ],
-  blush: [
-    { id: 4, name: 'Melocotón mate', reason: 'Efecto natural', price: '$9', tag: 'Seguro', type: 'Seguro', color: '#FFB5A7' },
-    { id: 5, name: 'Coral vibrante', reason: 'Luz instantánea', price: '$14', tag: 'Favorito', type: 'Favorito', color: '#FF9F1C' },
-  ],
-};
-
 // Product card component
 function ProductCard({ product }: { product: any }) {
   return (

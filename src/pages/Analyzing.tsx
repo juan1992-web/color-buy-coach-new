@@ -29,6 +29,7 @@ export default function Analyzing() {
     }, interval);
 
     const performAnalysis = async () => {
+      const startTime = Date.now();
       try {
         const payload = location.state;
         if (!payload || !payload.imageBase64) {
@@ -36,11 +37,15 @@ export default function Analyzing() {
            return;
         }
 
-        const res = await fetch('/api/analyze', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
+        // Run both the API call and a minimum 2-second delay in parallel
+        const [res] = await Promise.all([
+          fetch('/api/analyze', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          }),
+          new Promise(resolve => setTimeout(resolve, 2000)) // Minimum 2 seconds delay
+        ]);
 
         if (!res.ok) throw new Error("Error de API");
         
@@ -48,10 +53,10 @@ export default function Analyzing() {
         clearInterval(timer);
         setProgress(100);
         
-        // Wait slightly so 100% is visible
+        // Final transition delay to show 100% completion
         setTimeout(() => {
           navigate('/result', { state: { resultData: data } });
-        }, 400);
+        }, 500);
 
       } catch (err: any) {
         console.error("Analysis failed:", err);

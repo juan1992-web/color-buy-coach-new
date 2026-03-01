@@ -97,7 +97,7 @@ export default function Result() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50 pb-24">
+    <div className="flex flex-col min-h-screen bg-gray-50 pb-48">
       {/* Header */}
       <header className="px-6 py-4 flex justify-between items-center bg-white sticky top-0 z-10 border-b border-gray-100">
         <div className="flex items-center">

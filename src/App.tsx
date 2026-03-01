@@ -13,19 +13,21 @@ function App() {
   return (
     <BrowserRouter>
       <div className="min-h-screen flex flex-col max-w-md mx-auto bg-white shadow-xl relative">
-        <main className="flex-1 overflow-y-auto">
-          <Routes>
-            <Route path="/" element={<Landing />} />
-            <Route path="/guide" element={<Guide />} />
-            <Route path="/upload" element={<Upload />} />
-            <Route path="/analyzing" element={<Analyzing />} />
-            <Route path="/result" element={<Result />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/privacy" element={<Privacy />} />
-            <Route path="/terms" element={<Terms />} />
-          </Routes>
+        <main className="flex-1 overflow-y-auto flex flex-col">
+          <div className="flex-1">
+            <Routes>
+              <Route path="/" element={<Landing />} />
+              <Route path="/guide" element={<Guide />} />
+              <Route path="/upload" element={<Upload />} />
+              <Route path="/analyzing" element={<Analyzing />} />
+              <Route path="/result" element={<Result />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/terms" element={<Terms />} />
+            </Routes>
+          </div>
+          <Footer />
         </main>
-        <Footer />
       </div>
     </BrowserRouter>
   );

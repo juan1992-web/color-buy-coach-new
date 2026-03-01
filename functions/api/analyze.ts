@@ -2,12 +2,21 @@ export const onRequestPost: PagesFunction<any> = async (context) => {
   const { env, request } = context;
 
   try {
+    // 1. Check if API Key exists
+    if (!env.OPENAI_API_KEY) {
+      return new Response(JSON.stringify({ 
+        error: "Configuración incompleta", 
+        details: "La clave API de OpenAI (OPENAI_API_KEY) no está configurada en Cloudflare." 
+      }), { status: 500, headers: { "Content-Type": "application/json" } });
+    }
+
     const { imageBase64, accessory, makeup, budget } = await request.json() as any;
 
     if (!imageBase64) {
-      return new Response(JSON.stringify({ error: "No image provided" }), { status: 400 });
+      return new Response(JSON.stringify({ error: "No se proporcionó ninguna imagen" }), { status: 400 });
     }
 
+    // 2. Call OpenAI
     const openAiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -35,92 +44,60 @@ TAREAS
 No recomiendes ropa o moda general. Enfócate exclusivamente en maquillaje facial.
 
 REGLA DE PRESUPUESTO (OBLIGATORIO Y ESTRICTO):
-El presupuesto seleccionado por el usuario es la regla MÁS IMPORTANTE. Debes filtrar TODAS las recomendaciones para que sus precios (precio_usd) caigan ESTRICTAMENTE dentro del rango seleccionado. NO DEBES recomendar NINGÚN producto fuera de este rango.
-- Si el presupuesto es "<$10", TODOS los productos deben costar MENOS de 10 USD.
-- Si el presupuesto es "$10-25", TODOS los productos deben costar ENTRE 10 y 25 USD.
-- Si el presupuesto es "$25+", TODOS los productos deben costar MÁS de 25 USD.
-- Esta regla es más importante que cualquier otra consideración. Si no encuentras un producto perfecto en el rango de precios, elige el mejor disponible DENTRO de ese rango.
-
-CRITERIOS DE DECISIÓN
-- amazon_search_query: Crea una frase de búsqueda para Amazon que sea lo más específica posible, incluyendo la marca y el nombre del producto exacto (ej: "MAC Velvet Teddy lipstick", "NARS Blush Orgasm").
-- Si la foto es oscura, con luz amarilla, contraluz, desenfocada, con filtros o maquillaje fuerte: baja la confianza.
-- Si hay señales mixtas o poca evidencia: usa tono Neutro y confianza Baja/Media (no inventes certeza).
-- Usa las respuestas del usuario como “desempate”:
-  - Dorado tiende a favorecer cálido; Plateado tiende a favorecer frío; No sé = neutro/mixto.
-  - Natural favorece opciones suaves y “Seguro”; Intenso permite un “Punto” más atrevido.
-- Etiquetas:
-  - Seguro: bajo riesgo, favorece a la mayoría dentro del perfil, ideal diario.
-  - Favorito: mejor match general (elige solo 1–2 por categoría como máximo).
-  - Punto: opción más atrevida/ocasión, con un poco más de riesgo (máx 1 por categoría).
-- Las “razones” deben ser específicas (subtono/contraste/efecto) y muy cortas (≤ 110 caracteres).
+El presupuesto seleccionado por el usuario es la regla MÁS IMPORTANTE. Debes filtrar TODAS las recomendaciones para que sus precios (precio_usd) caigan ESTRICTAMENTE dentro del rango seleccionado.
+- Si el presupuesto es "<$10", < 10 USD.
+- Si el presupuesto es "$10-25", 10-25 USD.
+- Si el presupuesto es "$25+", > 25 USD.
 
 FORMATO DE SALIDA (OBLIGATORIO)
-Responde SOLO con un JSON válido (sin markdown, sin texto extra) con esta estructura exacta:
-
+Responde SOLO con un JSON válido (sin markdown, sin texto extra) con esta estructura:
 {
   "tono_sugerido": "Cálido|Neutro|Frío",
   "confianza": "Baja|Media|Alta",
   "subtono": "Primavera|Verano|Otoño|Invierno",
   "contraste": "Bajo|Medio|Alto",
   "recomendacion_de_hoy": {
-    "prioridad_compra": "<frase corta>",
-    "labiales": [
-      {"nombre":"...", "precio_usd": 0, "etiqueta":"Seguro|Favorito|Punto", "razon":"...", "color_hex": "#...", "amazon_search_query": "..."}
-    ],
-    "rubores": [
-      {"nombre":"...", "precio_usd": 0, "etiqueta":"Seguro|Favorito|Punto", "razon":"...", "color_hex": "#...", "amazon_search_query": "..."}
-    ]
-  },
-  "debug": {
-    "calidad_foto": "Buena|Regular|Mala",
-    "motivo_confianza": "<máx 200 caracteres>"
+    "prioridad_compra": "...",
+    "labiales": [...],
+    "rubores": [...]
   }
 }
 
-REGLAS FINALES
-- No incluyas links.
-- No repitas el mismo producto.
-- Cumple exactamente: Labiales=3, Rubores=2.
-- Si la foto no permite análisis, devuelve confianza \"Baja\" y recomendaciones muy conservadoras (\"Seguro\") con razones de cautela.`
+Si la foto no permite el análisis, devuelve confianza "Baja" y recomendaciones conservadoras.`
           },
           {
             role: "user",
             content: [
-              { type: "text", text: `Mis preferencias son: accesorios ${accessory}, maquillaje ${makeup}, y presupuesto ${budget}` },
+              { type: "text", text: `Preferencias: accesorios ${accessory}, maquillaje ${makeup}, presupuesto ${budget}` },
               { type: "image_url", image_url: { url: imageBase64 } }
             ]
           }
         ],
-        max_tokens: 1500,
+        max_tokens: 1000,
         temperature: 0.1
       })
     });
 
     if (!openAiResponse.ok) {
-      const err = await openAiResponse.text();
-      return new Response(JSON.stringify({ error: "OpenAI API error", details: err }), { status: 500 });
+      const errorText = await openAiResponse.text();
+      return new Response(JSON.stringify({ 
+        error: "OpenAI API error", 
+        status: openAiResponse.status,
+        details: errorText 
+      }), { status: 500, headers: { "Content-Type": "application/json" } });
     }
 
     const aiData = await openAiResponse.json();
-    const messageContent = aiData.choices[0].message.content;
-    
-    let result;
-    try {
-      result = JSON.parse(messageContent);
-    } catch(e) {
-      const jsonMatch = messageContent.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-         result = JSON.parse(jsonMatch[0]);
-      } else {
-         throw new Error("Failed to parse AI response");
-      }
-    }
+    const result = JSON.parse(aiData.choices[0].message.content);
 
     return new Response(JSON.stringify(result), {
       headers: { "Content-Type": "application/json" }
     });
 
   } catch (error: any) {
-    return new Response(JSON.stringify({ error: error.message }), { status: 500 });
+    return new Response(JSON.stringify({ error: "Internal Server Error", message: error.message }), { 
+      status: 500,
+      headers: { "Content-Type": "application/json" }
+    });
   }
 }

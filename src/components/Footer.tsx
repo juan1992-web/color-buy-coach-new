@@ -11,25 +11,25 @@ export default function Footer() {
           <Link 
             to="/about" 
             replace={isLegalPage}
-            className="text-sm text-gray-500 hover:text-brand-magenta font-medium"
+            className="text-sm text-gray-600 hover:text-brand-magenta font-medium"
           >
             Sobre nosotros
           </Link>
           <Link 
             to="/privacy" 
             replace={isLegalPage}
-            className="text-sm text-gray-500 hover:text-brand-magenta font-medium"
+            className="text-sm text-gray-600 hover:text-brand-magenta font-medium"
           >
             Privacidad
           </Link>
           <Link 
             to="/terms" 
             replace={isLegalPage}
-            className="text-sm text-gray-500 hover:text-brand-magenta font-medium"
+            className="text-sm text-gray-600 hover:text-brand-magenta font-medium"
           >
             Términos
           </Link>
-          <a href="mailto:hola@colorbuycoach.com" className="text-sm text-gray-500 hover:text-brand-magenta font-medium">
+          <a href="mailto:hola@colorbuycoach.com" className="text-sm text-gray-600 hover:text-brand-magenta font-medium">
             Contacto
           </a>
         </div>

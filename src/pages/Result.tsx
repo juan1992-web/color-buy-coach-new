@@ -19,12 +19,10 @@ const AMAZON_ASSOCIATE_TAG = 'colorbuycoach-20';
 
 // Helper to build the Amazon link for the Spanish marketplace
 const createAmazonLink = (searchTerm: string) => {
-  const searchParams = new URLSearchParams({
-    k: searchTerm,
-    tag: AMAZON_ASSOCIATE_TAG,
-  });
-  // Points to Amazon Spain
-  return `https://www.amazon.es/s?${searchParams.toString()}`;
+  // Use a clean encoding for the search term
+  const encodedQuery = encodeURIComponent(searchTerm).replace(/%20/g, '+');
+  // Return a direct search URL format that Amazon handles well across devices
+  return `https://www.amazon.es/s?k=${encodedQuery}&tag=${AMAZON_ASSOCIATE_TAG}`;
 };
 
 // Product card component

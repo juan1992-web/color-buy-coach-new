@@ -86,7 +86,8 @@ export default function Result() {
   const recomendacion = resultData?.recomendacion_de_hoy || {
     prioridad_compra: 'Analizando las mejores opciones para ti...',
     labiales: [],
-    rubores: []
+    rubores: [],
+    sombras: []
   };
 
   const handleShare = () => {
@@ -173,6 +174,21 @@ export default function Result() {
                 ))}
               </div>
             </section>
+
+            {/* Shadows */}
+            {recomendacion.sombras && recomendacion.sombras.length > 0 && (
+              <section>
+                <h4 className="font-bold text-gray-800 mb-3 flex items-center">
+                  <span className="w-2 h-2 rounded-full bg-brand-magenta mr-2"></span>
+                  Sombras de ojos (Top 2)
+                </h4>
+                <div className="space-y-3">
+                  {recomendacion.sombras.map((shadow: any, idx: number) => (
+                    <ProductCard key={idx} product={shadow} />
+                  ))}
+                </div>
+              </section>
+            )}
           </div>
         </div>
       </main>

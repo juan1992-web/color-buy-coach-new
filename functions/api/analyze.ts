@@ -25,6 +25,10 @@ export async function onRequestPost(context: any) {
           rubores: [
             { nombre: "Luminoso", precio_usd: 11, etiqueta: "Seguro", razon: "Efecto natural dorado", color_hex: "#F39F86", amazon_search_query: "Milani Baked Blush Luminoso" },
             { nombre: "Torrid", precio_usd: 32, etiqueta: "Favorito", razon: "Coral vibrante", color_hex: "#E87461", amazon_search_query: "NARS Blush Torrid" }
+          ],
+          sombras: [
+            { nombre: "Soft Glam", precio_usd: 45, etiqueta: "Favorito", razon: "Tonos tierra cálidos", color_hex: "#C49A6C", amazon_search_query: "Anastasia Soft Glam palette" },
+            { nombre: "Naked Heat", precio_usd: 54, etiqueta: "Seguro", razon: "Sombras ámbar y cobre", color_hex: "#A34C37", amazon_search_query: "Urban Decay Naked Heat palette" }
           ]
         },
         debug: { calidad_foto: "Regular", motivo_confianza: "Mock data" }
@@ -54,14 +58,14 @@ TAREAS
    - subtono (estación): Primavera | Verano | Otoño | Invierno
    - contraste: Bajo | Medio | Alto
 2) Recomendar “Prioridad de compra” para hoy (1 frase corta, accionable).
-3) Entregar 3 labiales y 2 rubores. Cada item debe incluir: nombre, precio_usd, etiqueta (Seguro/Favorito/Punto), razon (breve), color_hex (código hexadecimal del color sugerido), y MUY IMPORTANTE, un amazon_search_query.
+3) Entregar 3 labiales, 2 rubores y 2 paletas de sombras de ojos. Cada item debe incluir: nombre, precio_usd, etiqueta (Seguro/Favorito/Punto), razon (breve), color_hex (código hexadecimal del color sugerido), y MUY IMPORTANTE, un amazon_search_query.
 
 REGLA DE PRESUPUESTO (OBLIGATORIO Y ESTRICTO):
 El presupuesto seleccionado por el usuario es la regla MÁS IMPORTANTE. Debes filtrar TODAS las recomendaciones para que sus precios (precio_usd) caigan ESTRICTAMENTE dentro del rango seleccionado. NO DEBES recomendar NINGÚN producto fuera de este rango.
 - Si el presupuesto es "<$10", TODOS los productos deben costar MENOS de 10 USD.
 - Si el presupuesto es "$10-25", TODOS los productos deben costar ENTRE 10 y 25 USD.
 - Si el presupuesto es "$25+", TODOS los productos deben costar MÁS de 25 USD.
-- Esta regla es más importante que cualquier otra consideración. Si no encuentras un producto perfecto en el rango de precios, elige el mejor disponible DENTRO de ese rango.
+- Esta regla es más importante que cualquier otra consideration. Si no encuentras un producto perfecto en el rango de precios, elige el mejor disponible DENTRO de ese rango.
 
 CRITERIOS DE DECISIÓN
 - amazon_search_query: Crea una frase de búsqueda para Amazon que sea lo más específica posible, incluyendo la marca y el nombre del producto exacto (ej: "MAC Velvet Teddy lipstick", "NARS Blush Orgasm").
@@ -91,6 +95,9 @@ Responde SOLO con un JSON válido (sin markdown, sin texto extra) con esta estru
     ],
     "rubores": [
       {"nombre":"...", "precio_usd": 0, "etiqueta":"Seguro|Favorito|Punto", "razon":"...", "color_hex": "#...", "amazon_search_query": "..."}
+    ],
+    "sombras": [
+      {"nombre":"...", "precio_usd": 0, "etiqueta":"Seguro|Favorito|Punto", "razon":"...", "color_hex": "#...", "amazon_search_query": "..."}
     ]
   },
   "debug": {
@@ -102,7 +109,7 @@ Responde SOLO con un JSON válido (sin markdown, sin texto extra) con esta estru
 REGLAS FINALES
 - No incluyas links.
 - No repitas el mismo producto.
-- Cumple exactamente: Labiales=3, Rubores=2.
+- Cumple exactamente: Labiales=3, Rubores=2, Sombras=2.
 - Si la foto no permite análisis, devuelve confianza \"Baja\" y recomendaciones muy conservadoras (\"Seguro\") con razones de cautela.`
           },
           {

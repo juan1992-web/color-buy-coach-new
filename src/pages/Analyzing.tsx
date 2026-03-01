@@ -53,11 +53,11 @@ export default function Analyzing() {
           navigate('/result', { state: { resultData: data } });
         }, 400);
 
-      } catch (err) {
+      } catch (err: any) {
         console.error("Analysis failed:", err);
         clearInterval(timer);
-        // Fallback or handle error. We navigate to result to show mock data for now.
-        navigate('/result'); 
+        // Navigate back to upload with error state
+        navigate('/upload', { state: { error: "No se pudo completar el análisis. Por favor, intenta de nuevo." } });
       }
     };
 

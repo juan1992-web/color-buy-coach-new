@@ -2,15 +2,17 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Share2, Info, ExternalLink, RefreshCw } from 'lucide-react';
 import { Button } from '../components/Button';
 
+// CORRECT AMAZON AFFILIATE TAG
 const AMAZON_ASSOCIATE_TAG = 'colorbuycoach-20';
 
-// Helper to build the Amazon link
+// Helper to build the Amazon link for the Spanish marketplace
 const createAmazonLink = (searchTerm: string) => {
   const searchParams = new URLSearchParams({
     k: searchTerm,
     tag: AMAZON_ASSOCIATE_TAG,
   });
-  return `https://www.amazon.com.mx/s?${searchParams.toString()}`;
+  // Points to Amazon Spain
+  return `https://www.amazon.es/s?${searchParams.toString()}`;
 };
 
 // Product card component

@@ -1,14 +1,20 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/Button';
-import { ArrowLeft, ImagePlus } from 'lucide-react';
+import { ArrowLeft, ImagePlus, LoaderCircle } from 'lucide-react';
 
 export default function Upload() {
   const navigate = useNavigate();
+  
+  // State for user inputs
   const [photo, setPhoto] = useState<string | null>(null);
   const [accessory, setAccessory] = useState('');
   const [makeup, setMakeup] = useState('');
   const [budget, setBudget] = useState('');
+
+  // State for UI feedback
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -23,22 +29,46 @@ export default function Upload() {
 
   const isFormValid = photo && accessory && makeup && budget;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isFormValid) {
-      navigate('/analyzing', { 
-        state: { 
-          imageBase64: photo, 
-          accessory, 
-          makeup, 
-          budget 
-        } 
+    if (!isFormValid || isLoading) return;
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          imageBase64: photo,
+          accessory,
+          makeup,
+          budget,
+        }),
       });
+
+      if (!response.ok) {
+        const errData = await response.json();
+        throw new Error(errData.error || 'El análisis falló. Por favor, intenta con otra foto.');
+      }
+
+      const resultData = await response.json();
+
+      // Navigate to the result page with the data received from the API
+      navigate('/result', { state: { resultData } });
+
+    } catch (err: any) {
+      setError(err.message || 'No se pudo conectar con el servidor. Revisa tu conexión.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50 pb-20">
+    <div className="flex flex-col min-h-screen bg-gray-50 pb-28">
       {/* Header */}
       <header className="px-6 py-4 flex items-center border-b border-gray-200 bg-white sticky top-0 z-10 shadow-sm">
         <button onClick={() => navigate(-1)} className="p-2 -ml-2 rounded-full hover:bg-gray-100">
@@ -65,8 +95,7 @@ export default function Upload() {
               )}
               <input 
                 type="file" 
-                accept="image/*" 
-                capture="user"
+                accept="image/jpeg, image/png"
                 onChange={handlePhotoUpload}
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
               />
@@ -148,15 +177,23 @@ export default function Upload() {
       </main>
 
       {/* Sticky Bottom CTA */}
-      <div className="fixed bottom-0 left-0 right-0 max-w-md mx-auto p-4 bg-white border-t border-gray-100">
+      <div className="fixed bottom-0 left-0 right-0 max-w-md mx-auto p-4 bg-white border-t border-gray-100 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
         <Button 
           fullWidth 
           size="lg" 
-          disabled={!isFormValid}
+          disabled={!isFormValid || isLoading}
           onClick={handleSubmit}
+          type="submit"
         >
-          Analizar mi color
+          {isLoading ? (
+            <><LoaderCircle className="animate-spin w-5 h-5 mr-2" /> Analizando...</>
+          ) : (
+            'Analizar mi color'
+          )}
         </Button>
+        {error && (
+          <p className="text-red-500 text-sm mt-2 text-center">{error}</p>
+        )}
       </div>
     </div>
   );

@@ -1,8 +1,8 @@
-export const onRequestPost: PagesFunction<any> = async (context) => {
+export async function onRequestPost(context) {
   const { env, request } = context;
 
   try {
-    const { imageBase64, accessory, makeup, budget } = await request.json() as any;
+    const { imageBase64, accessory, makeup, budget } = await request.json();
 
     if (!imageBase64) {
       return new Response(JSON.stringify({ error: "No image provided" }), { status: 400 });
@@ -39,54 +39,31 @@ El presupuesto seleccionado por el usuario es la regla MÁS IMPORTANTE. Debes fi
 - Si el presupuesto es "<$10", TODOS los productos deben costar MENOS de 10 USD.
 - Si el presupuesto es "$10-25", TODOS los productos deben costar ENTRE 10 y 25 USD.
 - Si el presupuesto es "$25+", TODOS los productos deben costar MÁS de 25 USD.
-- Esta regla es más importante que cualquier otra consideración. Si no encuentras un producto perfecto en el rango de precios, elige el mejor disponible DENTRO de ese rango.
-
-CRITERIOS DE DECISIÓN
-- amazon_search_query: Crea una frase de búsqueda para Amazon que sea lo más específica posible, incluyendo la marca y el nombre del producto exacto (ej: "MAC Velvet Teddy lipstick", "NARS Blush Orgasm").
-- Si la foto es oscura, con luz amarilla, contraluz, desenfocada, con filtros o maquillaje fuerte: baja la confianza.
-- Si hay señales mixtas o poca evidencia: usa tono Neutro y confianza Baja/Media (no inventes certeza).
-- Usa las respuestas del usuario como “desempate”:
-  - Dorado tiende a favorecer cálido; Plateado tiende a favorecer frío; No sé = neutro/mixto.
-  - Natural favorece opciones suaves y “Seguro”; Intenso permite un “Punto” más atrevido.
-- Etiquetas:
-  - Seguro: bajo riesgo, favorece a la mayoría dentro del perfil, ideal diario.
-  - Favorito: mejor match general (elige solo 1–2 por categoría como máximo).
-  - Punto: opción más atrevida/ocasión, con un poco más de riesgo (máx 1 por categoría).
-- Las “razones” deben ser específicas (subtono/contraste/efecto) y muy cortas (≤ 110 caracteres).
 
 FORMATO DE SALIDA (OBLIGATORIO)
 Responde SOLO con un JSON válido (sin markdown, sin texto extra) con esta estructura exacta:
-
 {
   "tono_sugerido": "Cálido|Neutro|Frío",
   "confianza": "Baja|Media|Alta",
   "subtono": "Primavera|Verano|Otoño|Invierno",
   "contraste": "Bajo|Medio|Alto",
   "recomendacion_de_hoy": {
-    "prioridad_compra": "<frase corta>",
-    "labiales": [
-      {"nombre":"...", "precio_usd": 0, "etiqueta":"Seguro|Favorito|Punto", "razon":"...", "color_hex": "#...", "amazon_search_query": "..."}
-    ],
-    "rubores": [
-      {"nombre":"...", "precio_usd": 0, "etiqueta":"Seguro|Favorito|Punto", "razon":"...", "color_hex": "#...", "amazon_search_query": "..."}
-    ]
+    "prioridad_compra": "...",
+    "labiales": [...],
+    "rubores": [...]
   },
   "debug": {
-    "calidad_foto": "Buena|Regular|Mala",
-    "motivo_confianza": "<máx 200 caracteres>"
+    "calidad_foto": "...",
+    "motivo_confianza": "..."
   }
 }
 
-REGLAS FINALES
-- No incluyas links.
-- No repitas el mismo producto.
-- Cumple exactamente: Labiales=3, Rubores=2.
-- Si la foto no permite análisis, devuelve confianza \"Baja\" y recomendaciones muy conservadoras (\"Seguro\") con razones de cautela.`
+Si la foto no permite análisis, devuelve confianza \"Baja\" y razones de cautela.`
           },
           {
             role: "user",
             content: [
-              { type: "text", text: `Mis preferencias son: accesorios ${accessory}, maquillaje ${makeup}, y presupuesto ${budget}` },
+              { type: "text", text: `Preferencias: accesorios ${accessory}, maquillaje ${makeup}, presupuesto ${budget}` },
               { type: "image_url", image_url: { url: imageBase64 } }
             ]
           }
@@ -120,7 +97,7 @@ REGLAS FINALES
       headers: { "Content-Type": "application/json" }
     });
 
-  } catch (error: any) {
+  } catch (error) {
     return new Response(JSON.stringify({ error: error.message }), { status: 500 });
   }
 }

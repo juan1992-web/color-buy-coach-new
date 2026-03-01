@@ -19,7 +19,7 @@ export default function Landing() {
       <main className="flex-1 flex flex-col justify-center px-6 py-8">
         <div className="mb-8 relative">
           <div className="absolute -inset-1 bg-gradient-to-r from-brand-magenta to-brand-coral blur opacity-30 rounded-full" />
-          <h1 className="relative text-4xl md:text-5xl font-extrabold text-brand-dark leading-tight tracking-tight" fetchpriority="high">
+          <h1 className="relative text-4xl md:text-5xl font-extrabold text-brand-dark leading-tight tracking-tight">
             Descubre qué comprar según <span className="text-brand-magenta">tu color</span>
           </h1>
         </div>

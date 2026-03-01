@@ -29,7 +29,6 @@ export default function Analyzing() {
     }, interval);
 
     const performAnalysis = async () => {
-      const startTime = Date.now();
       try {
         const payload = location.state;
         if (!payload || !payload.imageBase64) {

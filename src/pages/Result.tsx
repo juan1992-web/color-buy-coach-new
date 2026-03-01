@@ -58,7 +58,7 @@ function ProductCard({ product }: { product: any }) {
             rel="noopener noreferrer"
             className="text-xs font-bold text-gray-400 hover:text-brand-magenta flex items-center"
           >
-            Ver más <ExternalLink className="w-3 h-3 ml-1" />
+            Ver en Amazon <ExternalLink className="w-3 h-3 ml-1" />
           </a>
         </div>
       </div>

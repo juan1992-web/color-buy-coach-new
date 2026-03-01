@@ -10,7 +10,7 @@ const createAmazonLink = (searchTerm: string) => {
     k: searchTerm,
     tag: AMAZON_ASSOCIATE_TAG,
   });
-  return `https://www.amazon.com/s?${searchParams.toString()}`;
+  return `https://www.amazon.com.mx/s?${searchParams.toString()}`;
 };
 
 // Product card component
@@ -76,8 +76,8 @@ export default function Result() {
   };
 
   const handleShare = () => {
-    // TODO: Use a dynamic URL once deployed
-    const text = `¡Mi coach de color me recomendó estos productos! 😄\nPrueba gratis en: [Your App URL]`;
+    const appUrl = window.location.origin;
+    const text = `¡Descubrí mi paleta de colores ideal con esta app! 😄 Échale un vistazo y prueba gratis:\n${appUrl}`;
     const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
     window.open(url, '_blank');
   };
@@ -87,7 +87,7 @@ export default function Result() {
       {/* Header */}
       <header className="px-6 py-4 flex justify-between items-center bg-white sticky top-0 z-10 border-b border-gray-100">
         <div className="flex items-center">
-          <button onClick={() => navigate('/')} className="p-2 -ml-2 rounded-full hover:bg-gray-100">
+          <button onClick={() => navigate(-1)} className="p-2 -ml-2 rounded-full hover:bg-gray-100">
             <ArrowLeft className="w-6 h-6 text-gray-800" />
           </button>
           <span className="ml-2 font-bold text-lg text-gray-800">Tus Resultados</span>

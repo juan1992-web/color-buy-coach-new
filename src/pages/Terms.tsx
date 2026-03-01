@@ -7,7 +7,7 @@ export default function Terms() {
   return (
     <div className="flex flex-col min-h-screen bg-white text-gray-700">
       <header className="px-6 py-4 flex items-center border-b border-gray-100 bg-white sticky top-0 z-10">
-        <button onClick={() => navigate(-1)} className="p-2 -ml-2 rounded-full hover:bg-gray-100">
+        <button onClick={() => navigate('/')} className="p-2 -ml-2 rounded-full hover:bg-gray-100">
           <ArrowLeft className="w-6 h-6 text-gray-800" />
         </button>
         <span className="ml-4 font-bold text-lg text-gray-800">Términos de Servicio</span>
@@ -40,7 +40,7 @@ export default function Terms() {
         <section className="mb-8">
           <h2 className="text-xl font-bold text-brand-dark mb-3">4. Modificaciones</h2>
           <p>
-            Nos reservamos el derecho de modificar estos términos en cualquier momento para adaptarnos a nuevas funcionalidades o requisitos legales.
+            Nos reservamos el derecho de modificar estos términos en cualquier momento para adaptarnos a nuevas funcionalidades or requisitos legales.
           </p>
         </section>
       </main>

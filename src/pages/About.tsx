@@ -7,7 +7,7 @@ export default function About() {
   return (
     <div className="flex flex-col min-h-screen bg-white">
       <header className="px-6 py-4 flex items-center border-b border-gray-100 bg-white sticky top-0 z-10">
-        <button onClick={() => navigate(-1)} className="p-2 -ml-2 rounded-full hover:bg-gray-100">
+        <button onClick={() => navigate('/')} className="p-2 -ml-2 rounded-full hover:bg-gray-100">
           <ArrowLeft className="w-6 h-6 text-gray-800" />
         </button>
         <span className="ml-4 font-bold text-lg text-gray-800">Sobre nosotros</span>

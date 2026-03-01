@@ -1,9 +1,22 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Button } from '../components/Button';
 import { ArrowLeft, Share2, Info, ExternalLink, RefreshCw } from 'lucide-react';
+import { Button } from '../components/Button';
+
+const AMAZON_ASSOCIATE_TAG = 'colorbuycoach-20';
+
+// Helper to build the Amazon link
+const createAmazonLink = (searchTerm: string) => {
+  const searchParams = new URLSearchParams({
+    k: searchTerm,
+    tag: AMAZON_ASSOCIATE_TAG,
+  });
+  return `https://www.amazon.com/s?${searchParams.toString()}`;
+};
 
 // Product card component
 function ProductCard({ product }: { product: any }) {
+  const amazonLink = createAmazonLink(product.amazon_search_query || product.nombre);
+
   return (
     <div className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow flex items-start gap-4 mb-3">
       {/* Color Preview Swatch */}
@@ -27,9 +40,14 @@ function ProductCard({ product }: { product: any }) {
           }`}>
             {product.etiqueta}
           </span>
-          <button className="text-xs font-bold text-gray-400 hover:text-brand-magenta flex items-center">
+          <a 
+            href={amazonLink} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="text-xs font-bold text-gray-400 hover:text-brand-magenta flex items-center"
+          >
             Ver más <ExternalLink className="w-3 h-3 ml-1" />
-          </button>
+          </a>
         </div>
       </div>
     </div>
@@ -58,7 +76,8 @@ export default function Result() {
   };
 
   const handleShare = () => {
-    const text = `¡Mi coach de color me recomendó estos productos! 😄\nPrueba gratis en: colorcompra.com`;
+    // TODO: Use a dynamic URL once deployed
+    const text = `¡Mi coach de color me recomendó estos productos! 😄\nPrueba gratis en: [Your App URL]`;
     const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
     window.open(url, '_blank');
   };

@@ -18,13 +18,13 @@ export async function onRequestPost(context: any) {
         recomendacion_de_hoy: {
           prioridad_compra: "Un labial terracota para resaltar tu calidez natural.",
           labiales: [
-            { nombre: "Velvet Teddy", precio_usd: 24, etiqueta: "Seguro", razon: "Nude cálido clásico", color_hex: "#B67C6E" },
-            { nombre: "Toast of New York", precio_usd: 10, etiqueta: "Favorito", razon: "Tono cálido vibrante", color_hex: "#9C3B2A" },
-            { nombre: "Amazonian", precio_usd: 12, etiqueta: "Punto", razon: "Ideal para la noche", color_hex: "#8A3B3C" }
+            { nombre: "Velvet Teddy", precio_usd: 24, etiqueta: "Seguro", razon: "Nude cálido clásico", color_hex: "#B67C6E", amazon_search_query: "MAC Velvet Teddy lipstick" },
+            { nombre: "Toast of New York", precio_usd: 10, etiqueta: "Favorito", razon: "Tono cálido vibrante", color_hex: "#9C3B2A", amazon_search_query: "Revlon Super Lustrous Toast of New York" },
+            { nombre: "Amazonian", precio_usd: 12, etiqueta: "Punto", razon: "Ideal para la noche", color_hex: "#8A3B3C", amazon_search_query: "Tarte Amazonian Clay lipstick" }
           ],
           rubores: [
-            { nombre: "Luminoso", precio_usd: 11, etiqueta: "Seguro", razon: "Efecto natural dorado", color_hex: "#F39F86" },
-            { nombre: "Torrid", precio_usd: 32, etiqueta: "Favorito", razon: "Coral vibrante", color_hex: "#E87461" }
+            { nombre: "Luminoso", precio_usd: 11, etiqueta: "Seguro", razon: "Efecto natural dorado", color_hex: "#F39F86", amazon_search_query: "Milani Baked Blush Luminoso" },
+            { nombre: "Torrid", precio_usd: 32, etiqueta: "Favorito", razon: "Coral vibrante", color_hex: "#E87461", amazon_search_query: "NARS Blush Torrid" }
           ]
         },
         debug: { calidad_foto: "Regular", motivo_confianza: "Mock data" }
@@ -57,9 +57,10 @@ TAREAS
 3) Entregar:
    - Labiales (Top 3)
    - Rubores (Top 2)
-   Cada item debe incluir: nombre, precio_usd, etiqueta (Seguro/Favorito/Punto), razon (breve), y color_hex (código hexadecimal del color sugerido).
+   Cada item debe incluir: nombre, precio_usd, etiqueta (Seguro/Favorito/Punto), razon (breve), color_hex (código hexadecimal del color sugerido), y MUY IMPORTANTE, un amazon_search_query.
 
 CRITERIOS DE DECISIÓN (IMPORTANTE)
+- amazon_search_query: Crea una frase de búsqueda para Amazon que sea lo más específica posible, incluyendo la marca y el nombre del producto exacto (ej: "MAC Velvet Teddy lipstick", "NARS Blush Orgasm").
 - Si la foto es oscura, con luz amarilla, contraluz, desenfocada, con filtros o maquillaje fuerte: baja la confianza.
 - Si hay señales mixtas o poca evidencia: usa tono Neutro y confianza Baja/Media (no inventes certeza).
 - Usa las respuestas del usuario como “desempate”:
@@ -86,13 +87,13 @@ Responde SOLO con un JSON válido (sin markdown, sin texto extra) con esta estru
   "recomendacion_de_hoy": {
     "prioridad_compra": "<frase corta>",
     "labiales": [
-      {"nombre":"...", "precio_usd": 0, "etiqueta":"Seguro|Favorito|Punto", "razon":"...", "color_hex": "#..."},
-      {"nombre":"...", "precio_usd": 0, "etiqueta":"Seguro|Favorito|Punto", "razon":"...", "color_hex": "#..."},
-      {"nombre":"...", "precio_usd": 0, "etiqueta":"Seguro|Favorito|Punto", "razon":"...", "color_hex": "#..."}
+      {"nombre":"...", "precio_usd": 0, "etiqueta":"Seguro|Favorito|Punto", "razon":"...", "color_hex": "#...", "amazon_search_query": "..."},
+      {"nombre":"...", "precio_usd": 0, "etiqueta":"Seguro|Favorito|Punto", "razon":"...", "color_hex": "#...", "amazon_search_query": "..."},
+      {"nombre":"...", "precio_usd": 0, "etiqueta":"Seguro|Favorito|Punto", "razon":"...", "color_hex": "#...", "amazon_search_query": "..."}
     ],
     "rubores": [
-      {"nombre":"...", "precio_usd": 0, "etiqueta":"Seguro|Favorito|Punto", "razon":"...", "color_hex": "#..."},
-      {"nombre":"...", "precio_usd": 0, "etiqueta":"Seguro|Favorito|Punto", "razon":"...", "color_hex": "#..."}
+      {"nombre":"...", "precio_usd": 0, "etiqueta":"Seguro|Favorito|Punto", "razon":"...", "color_hex": "#...", "amazon_search_query": "..."},
+      {"nombre":"...", "precio_usd": 0, "etiqueta":"Seguro|Favorito|Punto", "razon":"...", "color_hex": "#...", "amazon_search_query": "..."}
     ]
   },
   "debug": {
@@ -103,7 +104,6 @@ Responde SOLO con un JSON válido (sin markdown, sin texto extra) con esta estru
 
 REGLAS FINALES
 - No incluyas links.
-- No incluyas marcas si no estás seguro del presupuesto (elige opciones coherentes).
 - No repitas el mismo producto.
 - Cumple exactamente: Labiales=3, Rubores=2.
 - Si la foto no permite análisis, devuelve confianza \"Baja\" y recomendaciones muy conservadoras (\"Seguro\") con razones de cautela.

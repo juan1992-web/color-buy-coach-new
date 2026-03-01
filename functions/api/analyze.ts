@@ -1,34 +1,13 @@
-export async function onRequestPost(context: any) {
+import { Env } from "../types";
+
+export const onRequestPost: PagesFunction<Env> = async (context) => {
+  const { env, request } = context;
+
   try {
-    const { request, env } = context;
-    const body = await request.json();
-    const { imageBase64, makeup, accessory, budget } = body;
+    const { imageBase64, accessory, makeup, budget } = await request.json() as any;
 
     if (!imageBase64) {
       return new Response(JSON.stringify({ error: "No image provided" }), { status: 400 });
-    }
-
-    if (!env.OPENAI_API_KEY) {
-      console.warn("OPENAI_API_KEY is not set. Returning mock response.");
-      return new Response(JSON.stringify({
-        tono_sugerido: "Cálido",
-        confianza: "Media",
-        subtono: "Otoño",
-        contraste: "Medio",
-        recomendacion_de_hoy: {
-          prioridad_compra: "Un labial terracota para resaltar tu calidez natural.",
-          labiales: [
-            { nombre: "Velvet Teddy", precio_usd: 24, etiqueta: "Seguro", razon: "Nude cálido clásico", color_hex: "#B67C6E", amazon_search_query: "MAC Velvet Teddy lipstick" },
-            { nombre: "Toast of New York", precio_usd: 10, etiqueta: "Favorito", razon: "Tono cálido vibrante", color_hex: "#9C3B2A", amazon_search_query: "Revlon Super Lustrous Toast of New York" },
-            { nombre: "Amazonian", precio_usd: 12, etiqueta: "Punto", razon: "Ideal para la noche", color_hex: "#8A3B3C", amazon_search_query: "Tarte Amazonian Clay lipstick" }
-          ],
-          rubores: [
-            { nombre: "Luminoso", precio_usd: 11, etiqueta: "Seguro", razon: "Efecto natural dorado", color_hex: "#F39F86", amazon_search_query: "Milani Baked Blush Luminoso" },
-            { nombre: "Torrid", precio_usd: 32, etiqueta: "Favorito", razon: "Coral vibrante", color_hex: "#E87461", amazon_search_query: "NARS Blush Torrid" }
-          ]
-        },
-        debug: { calidad_foto: "Regular", motivo_confianza: "Mock data" }
-      }), { headers: { "Content-Type": "application/json" } });
     }
 
     const openAiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -43,19 +22,19 @@ export async function onRequestPost(context: any) {
           {
             role: "system",
             content: `Eres “ColorCompra”, un coach de compras basado en colorimetría personal aplicada al maquillaje facial (labiales y rubores).
-            Tu objetivo es reducir la duda del usuario y recomendar compras seguras para HOY, usando:
-            (1) una foto frontal del rostro (sin filtro, luz natural) y
-            (2) respuestas rápidas del usuario: accesorios (Dorado/Plateado/No sé), maquillaje (Natural/Intenso/Poco/Nada), y presupuesto.
+Tu objetivo es reducir la duda del usuario y recomendar compras seguras para HOY, usando:
+(1) una foto frontal del rostro (sin filtro, luz natural) y
+(2) respuestas rápidas del usuario: accesorios (Dorado/Plateado/No sé), maquillaje (Natural/Intenso/Poco/Nada), y presupuesto.
 
-            TAREAS
-            1) Diagnosticar el perfil de color con una postura conservadora:
-            - tono_sugerido: Cálido | Neutro | Frío
-            - confianza: Baja | Media | Alta
-            - subtono (estación): Primavera | Verano | Otoño | Invierno
-            - contraste: Bajo | Medio | Alto
-            2) Recomendar “Prioridad de compra” para hoy (1 frase corta, accionable).
-            3) Entregar 3 labiales y 2 rubores. Cada item debe incluir: nombre, precio_usd, etiqueta (Seguro/Favorito/Punto), razon (breve), color_hex (código hexadecimal del color sugerido), y MUY IMPORTANTE, un amazon_search_query.
-            No recomiendes ropa o moda general. Enfócate exclusivamente en maquillaje facial.`
+TAREAS
+1) Diagnosticar el perfil de color con una postura conservadora:
+   - tono_sugerido: Cálido | Neutro | Frío
+   - confianza: Baja | Media | Alta
+   - subtono (estación): Primavera | Verano | Otoño | Invierno
+   - contraste: Bajo | Medio | Alto
+2) Recomendar “Prioridad de compra” para hoy (1 frase corta, accionable).
+3) Entregar 3 labiales y 2 rubores. Cada item debe incluir: nombre, precio_usd, etiqueta (Seguro/Favorito/Punto), razon (breve), color_hex (código hexadecimal del color sugerido), y MUY IMPORTANTE, un amazon_search_query.
+No recomiendes ropa o moda general. Enfócate exclusivamente en maquillaje facial.
 
 REGLA DE PRESUPUESTO (OBLIGATORIO Y ESTRICTO):
 El presupuesto seleccionado por el usuario es la regla MÁS IMPORTANTE. Debes filtrar TODAS las recomendaciones para que sus precios (precio_usd) caigan ESTRICTAMENTE dentro del rango seleccionado. NO DEBES recomendar NINGÚN producto fuera de este rango.

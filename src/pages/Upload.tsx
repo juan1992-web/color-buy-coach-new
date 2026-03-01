@@ -55,7 +55,7 @@ export default function Upload() {
     <div className="flex flex-col min-h-screen bg-gray-50 pb-28">
       {/* Header */}
       <header className="px-6 py-4 flex items-center border-b border-gray-200 bg-white sticky top-0 z-10 shadow-sm">
-        <button onClick={() => navigate(-1)} className="p-2 -ml-2 rounded-full hover:bg-gray-100">
+        <button onClick={() => navigate('/')} className="p-2 -ml-2 rounded-full hover:bg-gray-100">
           <ArrowLeft className="w-6 h-6 text-gray-800" />
         </button>
         <span className="ml-4 font-bold text-lg text-gray-800">Sube tu foto</span>

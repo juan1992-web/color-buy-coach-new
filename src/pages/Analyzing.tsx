@@ -54,7 +54,7 @@ export default function Analyzing() {
         
         // Final transition delay to show 100% completion
         setTimeout(() => {
-          navigate('/result', { state: { resultData: data } });
+          navigate('/result', { replace: true, state: { resultData: data } });
         }, 500);
 
       } catch (err: any) {

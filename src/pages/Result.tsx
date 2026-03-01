@@ -101,7 +101,7 @@ export default function Result() {
       {/* Header */}
       <header className="px-6 py-4 flex justify-between items-center bg-white sticky top-0 z-10 border-b border-gray-100">
         <div className="flex items-center">
-          <button onClick={() => navigate(-1)} className="p-2 -ml-2 rounded-full hover:bg-gray-100">
+          <button onClick={() => navigate('/')} className="p-2 -ml-2 rounded-full hover:bg-gray-100">
             <ArrowLeft className="w-6 h-6 text-gray-800" />
           </button>
           <span className="ml-2 font-bold text-lg text-gray-800">Tus Resultados</span>
@@ -133,7 +133,7 @@ export default function Result() {
           
           <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500 relative z-10">
             <span>¿Resultado raro?</span>
-            <button onClick={() => navigate('/upload')} className="text-brand-magenta font-bold flex items-center">
+            <button onClick={() => navigate('/upload', { replace: true })} className="text-brand-magenta font-bold flex items-center">
               <RefreshCw className="w-3 h-3 mr-1" />
               Tomar otra foto
             </button>

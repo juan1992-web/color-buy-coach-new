@@ -25,7 +25,7 @@ export default function Landing() {
         </div>
         
         <p className="text-lg text-gray-600 mb-10 leading-relaxed font-medium">
-          Sube una foto y recibe 3 recomendaciones de maquillaje y ropa para hoy.
+          Sube una foto y recibe recomendaciones personalizadas de maquillaje para hoy.
           <br className="mt-2" />
           <span className="text-brand-dark font-bold">Menos duda. Mejores compras.</span>
         </p>

@@ -29,10 +29,10 @@ export default function About() {
             <Heart className="text-brand-magenta w-6 h-6" /> Nuestra Misión
           </h2>
           <p className="mb-4">
-            ColorCompra nació de una necesidad simple pero profunda: democratizar el acceso a la asesoría de imagen profesional. Históricamente, el análisis de colorimetría personal ha sido un servicio exclusivo y costoso. Nuestra misión es poner el poder de la ciencia del color en manos de cada persona, de forma gratuita y accesible a través de la inteligencia artificial.
+            ColorCompra nació de una necesidad simple pero profunda: democratizar el acceso a la asesoría de imagen profesional. Nuestra misión es poner el poder de la ciencia del color en manos de cada persona para que elija el maquillaje perfecto de forma gratuita y accesible a través de la inteligencia artificial.
           </p>
           <p>
-            No solo te decimos qué colores te quedan bien; te ayudamos a entender <strong>por qué</strong> funcionan para ti, permitiéndote tomar decisiones más conscientes en tu rutina diaria de belleza y moda.
+            No solo te decimos qué colores te quedan bien; te ayudamos a entender <strong>por qué</strong> funcionan para ti, permitiéndote tomar decisiones más conscientes en tu rutina diaria de belleza.
           </p>
         </section>
 

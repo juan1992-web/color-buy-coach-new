@@ -11,12 +11,38 @@
     
     <!-- Preconnect for Performance -->
     <link rel="preconnect" href="https://pagead2.googlesyndication.com">
-    <link rel="preconnect" href="https://fundingchoicesmessages.google.com">
     <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com">
-    <link rel="dns-prefetch" href="https://fundingchoicesmessages.google.com">
 
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2292478582874425"
-     crossorigin="anonymous"></script>
+    <!-- Critical Assets Priority -->
+    <link rel="preload" href="/src/main.tsx" as="script" fetchpriority="high">
+
+    <!-- Optimized AdSense Loading (Delayed for Performance) -->
+    <script>
+      window.addEventListener('scroll', function() {
+        if (!window.adsenseLoaded) {
+          const script = document.createElement('script');
+          script.async = true;
+          script.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2292478582874425";
+          script.crossOrigin = "anonymous";
+          document.head.appendChild(script);
+          window.adsenseLoaded = true;
+        }
+      }, { once: true });
+      
+      // Also load on first touch/mouse move for non-scrolling users
+      ['mousemove', 'touchstart'].forEach(event => {
+        window.addEventListener(event, function() {
+          if (!window.adsenseLoaded) {
+            const script = document.createElement('script');
+            script.async = true;
+            script.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2292478582874425";
+            script.crossOrigin = "anonymous";
+            document.head.appendChild(script);
+            window.adsenseLoaded = true;
+          }
+        }, { once: true });
+      });
+    </script>
   </head>
   <body>
     <div id="root"></div>

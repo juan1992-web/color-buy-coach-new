@@ -10,7 +10,7 @@ export default function Landing() {
       {/* Header */}
       <header className="py-6 px-6 flex justify-between items-center">
         <div className="flex items-center gap-2">
-          <Palette className="w-6 h-6 text-brand-magenta" />
+          <Palette className="w-8 h-8 text-brand-magenta" width={32} height={32} />
           <span className="font-bold text-xl text-brand-dark tracking-tight">ColorCompra</span>
         </div>
       </header>
@@ -19,7 +19,7 @@ export default function Landing() {
       <main className="flex-1 flex flex-col justify-center px-6 py-8">
         <div className="mb-8 relative">
           <div className="absolute -inset-1 bg-gradient-to-r from-brand-magenta to-brand-coral blur opacity-30 rounded-full" />
-          <h1 className="relative text-4xl md:text-5xl font-extrabold text-brand-dark leading-tight tracking-tight">
+          <h1 className="relative text-4xl md:text-5xl font-extrabold text-brand-dark leading-tight tracking-tight" fetchpriority="high">
             Descubre qué comprar según <span className="text-brand-magenta">tu color</span>
           </h1>
         </div>

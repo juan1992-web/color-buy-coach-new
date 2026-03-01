@@ -1,6 +1,4 @@
-import { Env } from "../types";
-
-export const onRequestPost: PagesFunction<Env> = async (context) => {
+export const onRequestPost: PagesFunction<any> = async (context) => {
   const { env, request } = context;
 
   try {
